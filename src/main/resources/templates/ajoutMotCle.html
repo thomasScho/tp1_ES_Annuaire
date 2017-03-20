@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Spring</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+
+<body>
+
+<h1>Ajout</h1>
+
+<form action="#" th:object="${keyword}" th:action="@{/motcle}" method="post">
+	Username : <input type="text" th:field="*{label}" />
+	
+	<button type="submit" name="save" th:text="save"></button>
+</form>
+
+</body>
+</html>
