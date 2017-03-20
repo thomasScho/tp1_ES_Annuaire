@@ -11,7 +11,7 @@
 
 <h1>Ajout</h1>
 
-<form action="#" th:object="${object.contact}" th:action="@{/contact}" method="post">
+<form action="#" th:object="${object}" th:action="@{/contact}" method="post">
 	Username : <input type="text" th:field="*{username}" />
 	
 	<select>

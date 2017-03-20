@@ -1,4 +1,4 @@
-package com.sishnobodyteam.repository;
+package com.sishnobodyteam.repository.mongodb;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 

@@ -10,15 +10,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 
 import com.sishnobodyteam.entity.Contact;
+import com.sishnobodyteam.entity.ContactES;
 import com.sishnobodyteam.entity.KeyWord;
-import com.sishnobodyteam.repository.ContactRepository;
-import com.sishnobodyteam.repository.KeyWordRepository;
+import com.sishnobodyteam.repository.elasticsearch.ContactRepositoryES;
+import com.sishnobodyteam.repository.mongodb.ContactRepository;
+import com.sishnobodyteam.repository.mongodb.KeyWordRepository;
 
 @SpringBootApplication
 public class Tp1Application implements CommandLineRunner {
 
 	@Autowired
-	private CustomerRepository repository;
+	private ContactRepositoryES contactRepositoryES;
 
 	@Autowired
 	private KeyWordRepository keyWordRepository;
@@ -29,10 +31,7 @@ public class Tp1Application implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		this.repository.deleteAll();
-		saveCustomers();
-		fetchAllCustomers();
-		fetchIndividualCustomers();
+		this.contactRepositoryES.deleteAll();
 
 		KeyWord keyWord = new KeyWord();
 		keyWord.setLabel("restaurant");
@@ -47,31 +46,13 @@ public class Tp1Application implements CommandLineRunner {
 		contact.setUsername("kebab Cergy");
 		contactRepository.save(contact);
 
+		syncDatabseElasticSearch();
 	}
-
-	private void saveCustomers() {
-		this.repository.save(new Customer("Alice", "Smith"));
-		this.repository.save(new Customer("Bob", "Smith"));
-	}
-
-	private void fetchAllCustomers() {
-		System.out.println("Customers found with findAll():");
-		System.out.println("-------------------------------");
-		for (Customer customer : this.repository.findAll()) {
-			System.out.println(customer);
-		}
-		System.out.println();
-	}
-
-	private void fetchIndividualCustomers() {
-		System.out.println("Customer found with findByFirstName('Alice'):");
-		System.out.println("--------------------------------");
-		System.out.println(this.repository.findByFirstName("Alice"));
-
-		System.out.println("Customers found with findByLastName('Smith'):");
-		System.out.println("--------------------------------");
-		for (Customer customer : this.repository.findByLastName("Smith")) {
-			System.out.println(customer);
+	
+	public void syncDatabseElasticSearch() {
+		List<Contact> datasMongoDB = contactRepository.findAll();
+		for (Contact c : datasMongoDB) {
+			contactRepositoryES.save(new ContactES(c));
 		}
 	}
 
